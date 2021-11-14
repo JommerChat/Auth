@@ -35,10 +35,10 @@ jobs:
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} registry.parlantos.com
       - name: Build Container image
         run: >
-          docker build --build-arg SNOWFLAKE_BASE_URL=${{ secrets.SNOWFLAKE_BASE_URL}} --build-arg POSTGRES_URL=${{secrets.POSTGRES_URL }}
+          docker build -t --build-arg SNOWFLAKE_BASE_URL=${{ secrets.SNOWFLAKE_BASE_URL}} --build-arg POSTGRES_URL=${{secrets.POSTGRES_URL }}
           --build-arg POSTGRES_USERNAME=${{ secrets.POSTGRES_USERNAME }} --build-arg POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} --build-arg OKTA_TOKEN=${{ secrets.OKTA_TOKEN }}
           --build-arg OKTA_ORG_URL=${{ secrets.OKTA_ORG_URL }} --build-arg OKTA_ISSUER=${{ secrets.OKTA_ISSUER }} --build-arg OKTA_CLIENTID=${{ secrets.OKTA_CLIENTID }} 
           --build-arg OKTA_CLIENTSECRET=${{ secrets.OKTA_CLIENTSECRET }}   
-          -t ${{ secrets.DOCKER_REPO }}:latest .
+          ${{ secrets.DOCKER_REPO }}:latest .
       - name: Publish Docker image
         run: docker push ${{ secrets.DOCKER_REPO }}
