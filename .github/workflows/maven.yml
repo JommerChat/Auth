@@ -42,3 +42,22 @@ jobs:
           -t ${{ secrets.DOCKER_REPO }}:latest .
       - name: Publish Docker image
         run: docker push ${{ secrets.DOCKER_REPO }}
+  launch-docker-image-on-server:
+    name: Run docker image on server
+    runs-on: self-hosted
+    needs: [publish-docker-image]
+    steps:
+      - name: Execute docker commands through ssh
+        uses: appleboy/ssh-action@v0.1.4
+        with: 
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          key: ${{ secrets.CICD_SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} registry.parlantos.com
+            docker container stop parlantos-auth
+            docker rm parlantos-auth
+            docker pull registry.parlantos.com/auth:latest
+            docker run -d -p 8081:8081 --name parlantos-auth registry.parlantos.com/auth:latest
