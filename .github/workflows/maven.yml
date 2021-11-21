@@ -60,4 +60,4 @@ jobs:
             docker container stop parlantos-auth
             docker rm parlantos-auth
             docker pull registry.parlantos.com/auth:latest
-            docker run -d -p 8081:8081 --name parlantos-auth registry.parlantos.com/auth:latest
+            docker run -d -p 8081:8081 --name parlantos-auth --restart unless-stopped registry.parlantos.com/auth:latest
